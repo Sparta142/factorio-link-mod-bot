@@ -19,9 +19,9 @@ if not version:
     raise RuntimeError('version is not set')
 
 setup(
-    name='factorio-mod-portal-bot',
+    name='factorio-link-mod-bot',
     author='Sparta142',
-    url='http://github.com/Sparta142/factorio-mod-portal-bot',
+    url='http://github.com/Sparta142/factorio-link-mod-bot',
     version=version,
     packages=find_packages(exclude=['tests']),
     license='MIT',
@@ -44,8 +44,6 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.6',
-        'Topic :: Games/Entertainment',
-        'Topic :: Internet',
-        'Topic :: Utilities'
+        'Topic :: Internet'
     ]
 )

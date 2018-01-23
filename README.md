@@ -1,7 +1,7 @@
-# Factorio Mod Portal Bot
-[![Travis](https://img.shields.io/travis/Sparta142/factorio-mod-portal-bot.svg)]()
-[![Coveralls github](https://img.shields.io/coveralls/github/Sparta142/factorio-mod-portal-bot.svg)]()
-[![Requires.io](https://img.shields.io/requires/github/Sparta142/factorio-mod-portal-bot.svg)]()
+# Factorio Link Mod Bot
+[![Travis](https://img.shields.io/travis/Sparta142/factorio-link-mod-bot.svg)]()
+[![Coveralls github](https://img.shields.io/coveralls/github/Sparta142/factorio-link-mod-bot.svg)]()
+[![Requires.io](https://img.shields.io/requires/github/Sparta142/factorio-link-mod-bot.svg)]()
 
 Reddit bot that links [Factorio mods](https://mods.factorio.com/) on request.
 
@@ -17,5 +17,5 @@ This project is a complete rewrite of the project fork at
 ## Installation
 Run this in your favorite shell to install directly from GitHub:
 ```
-$ pip install -e git+https://github.com/Sparta142/factorio-mod-portal-bot.git#egg=factorio_mod_portal_bot
+$ pip install -e git+https://github.com/Sparta142/factorio-link-mod-bot.git#egg=factorio_link_mod_bot
 ```
