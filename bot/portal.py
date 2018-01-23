@@ -86,8 +86,8 @@ class ModPortal(object):
                 'User-Agent': user_agent
             })
 
-    @staticmethod
-    def _parse_mods(html):
+    @classmethod
+    def _parse_mods(cls, html):
         """
         Generator that yields all ``.mod-card`` elements
         in the given HTML document.
@@ -96,7 +96,7 @@ class ModPortal(object):
         """
         document = lxml.html.document_fromstring(html)
 
-        for element in document.cssselect('.mod-card'):
+        for element in cls.select_mod_cards(document):
             yield ModCard.from_element(element)
 
     def _do_search(self, query):
@@ -121,3 +121,6 @@ class ModPortal(object):
         :return: the sanitized string
         """
         return urllib.parse.quote(query.replace('/', ''))
+
+    # Precompiled CSS selector function, for performance reasons
+    select_mod_cards = CSSSelector('.mod-card', translator='html')
