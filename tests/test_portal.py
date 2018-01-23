@@ -6,11 +6,12 @@ from unittest.mock import patch
 from bot.portal import ModCard, ModPortal
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(CURRENT_DIR, 'data')
 
 
 @fixture(scope='session')
 def html():
-    filename = os.path.join(CURRENT_DIR, 'data', 'example.html')
+    filename = os.path.join(DATA_DIR, 'example.html')
 
     # Use ./data/example.html as the example mod portal response HTML
     with open(filename, 'rt', encoding='utf-8') as f:
@@ -20,7 +21,7 @@ def html():
 class TestModCard(object):
     @fixture(scope='session')
     def element(self):
-        filename = os.path.join(CURRENT_DIR, 'data', 'example_element.html')
+        filename = os.path.join(DATA_DIR, 'example_element.html')
 
         # Use ./data/example_element.html as the example mod card HTML element
         with open(filename, 'rt', encoding='utf-8') as f:
