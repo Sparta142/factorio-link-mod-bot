@@ -9,10 +9,13 @@ This project is a complete rewrite of the project fork at
 [michael-3-141/FactorioModPortalBot](https://github.com/michael-3-141/FactorioModPortalBot).
 
 ## Usage (for Redditors)
-* To link a single mod: `!linkmod Squeak Through`
-* To link a list of mods (max 20): `!linkmods Bobingabout`
+* To link a single mod: `linkmod: Squeak Through`
+* To link a list of mods (max 20): `linkmods: Bobingabout`
 
-**Note:** The bot will only respond to the first command in each comment/submission.
+**Note:** You can use more than one command at once, but the response will 
+always be capped at 20 results.  
+**Note 2:** The bot will only respond to comments, not submissions 
+(i.e., self posts).
 
 ## Installation
 Run this in your favorite shell to install directly from GitHub:
@@ -29,4 +32,5 @@ This makes it ideal for deployment to Heroku or other similar PaaS.
 * `REDDIT_USERNAME` - The Reddit username to sign in with.
 * `REDDIT_PASSWORD` - The Reddit password to sign in with.
 * `REDDIT_USER_AGENT` - The user agent reported to Reddit.
+* `REDDIT_SUBREDDITS` - Comma-separated list of subreddits to monitor for commands.
 * `FACTORIO_USER_AGENT` - The user agent reported to the Factorio mod portal.
