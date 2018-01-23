@@ -3,7 +3,7 @@ import os
 from pytest import fixture
 from unittest.mock import patch
 
-from bot.portal import ModCard, ModPortal
+from bot.portal import SearchResult, ModPortal
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(CURRENT_DIR, 'data')
@@ -18,7 +18,7 @@ def html():
         return f.read()
 
 
-class TestModCard(object):
+class TestSearchResult(object):
     @fixture(scope='session')
     def element(self):
         filename = os.path.join(DATA_DIR, 'example_element.html')
@@ -28,7 +28,7 @@ class TestModCard(object):
             return lxml.html.fragment_fromstring(f.read())
 
     def test_from_tag_all_present(self, element):
-        expected = ModCard(
+        expected = SearchResult(
             title="Bob's Warfare",
             link='https://mods.factorio.com/mod/bobwarfare',
             author='Bobingabout',
@@ -37,7 +37,7 @@ class TestModCard(object):
             versions='0.13 - 0.16',
             downloads=186367
         )
-        actual = ModCard.from_element(element)
+        actual = SearchResult.from_element(element)
 
         assert actual == expected
 
@@ -99,7 +99,7 @@ class TestModPortal(object):
             for value in vars(mod_card).values():
                 assert value is not None
 
-    @patch('bot.portal.ModCard')
+    @patch('bot.portal.SearchResult')
     @patch('requests.Session.get')
     def test_search_one_only_parses_one_element(self, get, mod_card, *, html):
         get.return_value.text = html

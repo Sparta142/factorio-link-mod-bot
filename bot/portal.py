@@ -6,7 +6,7 @@ from lxml.cssselect import CSSSelector
 MOD_PORTAL_URL = 'https://mods.factorio.com'
 
 
-class ModCard(object):
+class SearchResult(object):
     """ Represents a single search result from the mod portal. """
 
     __slots__ = ('__dict__', 'title', 'link', 'author', 'author_link',
@@ -34,10 +34,10 @@ class ModCard(object):
     @classmethod
     def from_element(cls, element):
         """
-        Create a :class:`ModCard` from an lxml Element.
+        Create a :class:`SearchResult` from an lxml Element.
 
-        :param element: the element to create a ModCard from
-        :return: the new ModCard
+        :param element: the element to create a SearchResult from
+        :return: the new SearchResult
         """
         element.make_links_absolute(MOD_PORTAL_URL)
 
@@ -53,7 +53,7 @@ class ModCard(object):
         versions = cls.select_versions(mod_card_info)[0]
         downloads = cls.select_downloads(mod_card_info)[0]
 
-        return ModCard(
+        return SearchResult(
             title=mod_card_title.text_content().strip(),
             link=link.get('href'),
             author=mod_card_author.text_content().strip()[3:],  # Remove 'by '
@@ -94,9 +94,9 @@ class ModPortal(object):
         :return: list of search results
         """
         response = self._do_search(query)
-        results = self._parse_mods(response.text)
+        search_results = self._parse_mods(response.text)
 
-        return list(results)
+        return list(search_results)
 
     def search_one(self, query):
         """
@@ -111,9 +111,9 @@ class ModPortal(object):
         :return: the first search result
         """
         response = self._do_search(query)
-        results = self._parse_mods(response.text)
+        search_results = self._parse_mods(response.text)
 
-        return next(results)
+        return next(search_results)
 
     @classmethod
     def _parse_mods(cls, html):
@@ -126,7 +126,7 @@ class ModPortal(object):
         document = lxml.html.document_fromstring(html)
 
         for element in cls.select_mod_cards(document):
-            yield ModCard.from_element(element)
+            yield SearchResult.from_element(element)
 
     def _do_search(self, query):
         """
