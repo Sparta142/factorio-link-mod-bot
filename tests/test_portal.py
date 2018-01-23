@@ -1,4 +1,39 @@
-from bot.portal import ModPortal
+import os
+from bs4 import BeautifulSoup
+from pytest import fixture
+from unittest.mock import patch
+
+from bot.portal import ModCard, ModPortal
+
+
+@fixture(scope='session')
+def html():
+    directory = os.path.dirname(os.path.abspath(__file__))
+    filename = os.path.join(directory, 'data', 'example.html')
+
+    # Use ./data/example.html as the example mod portal response HTML
+    with open(filename, 'rt', encoding='utf-8') as f:
+        return f.read()
+
+
+class TestModCard(object):
+    @fixture(scope='session')
+    def tag(self, html):
+        return BeautifulSoup(html, 'lxml').select_one('.mod-card')
+
+    def test_from_tag_all_present(self, tag):
+        expected = ModCard(
+            title="Bob's Warfare",
+            link='https://mods.factorio.com/mod/bobwarfare',
+            author='Bobingabout',
+            author_link='https://mods.factorio.com/user/Bobingabout',
+            last_updated='a day ago',
+            versions='0.13 - 0.16',
+            downloads=186367
+        )
+        actual = ModCard.from_tag(tag)
+
+        assert actual == expected
 
 
 # noinspection PyProtectedMember
@@ -18,3 +53,28 @@ class TestModPortal(object):
     def test_sanitize_query_with_emoji(self):
         sanitized = ModPortal._sanitize_query('\U0001F600')
         assert sanitized == '%F0%9F%98%80'
+
+    def test_user_agent_is_used_if_present(self):
+        portal = ModPortal('my_user_agent')
+        assert portal._session.headers['User-Agent'] == 'my_user_agent'
+
+    def test_fallback_on_default_user_agent_if_missing(self):
+        portal = ModPortal()
+        assert 'User-Agent' in portal._session.headers
+
+    @patch('requests.Session.get')
+    def test_do_search_actually_makes_a_web_request(self, get):
+        portal = ModPortal()
+        portal._do_search('hello')
+
+        get.assert_called_once_with('https://mods.factorio.com/query/hello')
+
+    def test_parse_mods_yields_all_mods_in_document(self, html):
+        mods = list(ModPortal._parse_mods(html))
+        assert len(mods) == 20
+
+        # Check that every mod parsed has no invalid data
+        for mod_card in mods:
+            for value in vars(mod_card).values():
+                assert value is not None
+                assert value != 'Unknown'
