@@ -1,7 +1,7 @@
 # Factorio Link Mod Bot
-[![Travis](https://img.shields.io/travis/Sparta142/factorio-link-mod-bot.svg)]()
-[![Coveralls github](https://img.shields.io/coveralls/github/Sparta142/factorio-link-mod-bot.svg)]()
-[![Requires.io](https://img.shields.io/requires/github/Sparta142/factorio-link-mod-bot.svg)]()
+[![Travis](https://img.shields.io/travis/Sparta142/factorio-link-mod-bot.svg)](https://travis-ci.org/Sparta142/factorio-link-mod-bot)
+[![Coveralls github](https://img.shields.io/coveralls/github/Sparta142/factorio-link-mod-bot.svg)](https://coveralls.io/github/Sparta142/factorio-link-mod-bot)
+[![Requires.io](https://img.shields.io/requires/github/Sparta142/factorio-link-mod-bot.svg)](https://requires.io/github/Sparta142/factorio-link-mod-bot/requirements/)
 
 Reddit bot that links [Factorio mods](https://mods.factorio.com/) on request.
 
