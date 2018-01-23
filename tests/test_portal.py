@@ -110,4 +110,4 @@ class TestModPortal(object):
         portal.search_one('hello')
 
         # Check that only one mod card was parsed in total
-        mod_card.from_element.assert_called_once()
+        assert mod_card.from_element.call_count == 1
