@@ -1,15 +1,16 @@
+import lxml.html
 import os
-from bs4 import BeautifulSoup
 from pytest import fixture
 from unittest.mock import patch
 
 from bot.portal import ModCard, ModPortal
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 @fixture(scope='session')
 def html():
-    directory = os.path.dirname(os.path.abspath(__file__))
-    filename = os.path.join(directory, 'data', 'example.html')
+    filename = os.path.join(CURRENT_DIR, 'data', 'example.html')
 
     # Use ./data/example.html as the example mod portal response HTML
     with open(filename, 'rt', encoding='utf-8') as f:
@@ -18,10 +19,14 @@ def html():
 
 class TestModCard(object):
     @fixture(scope='session')
-    def tag(self, html):
-        return BeautifulSoup(html, 'lxml').select_one('.mod-card')
+    def element(self):
+        filename = os.path.join(CURRENT_DIR, 'data', 'example_element.html')
 
-    def test_from_tag_all_present(self, tag):
+        # Use ./data/example_element.html as the example mod card HTML element
+        with open(filename, 'rt', encoding='utf-8') as f:
+            return lxml.html.fragment_fromstring(f.read())
+
+    def test_from_tag_all_present(self, element):
         expected = ModCard(
             title="Bob's Warfare",
             link='https://mods.factorio.com/mod/bobwarfare',
@@ -31,7 +36,7 @@ class TestModCard(object):
             versions='0.13 - 0.16',
             downloads=186367
         )
-        actual = ModCard.from_tag(tag)
+        actual = ModCard.from_element(element)
 
         assert actual == expected
 

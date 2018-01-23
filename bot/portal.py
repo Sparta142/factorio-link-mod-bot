@@ -1,6 +1,8 @@
 import requests
 import urllib.parse
-from bs4 import BeautifulSoup
+import lxml.html
+from lxml.cssselect import CSSSelector
+
 
 MOD_PORTAL_URL = 'https://mods.factorio.com'
 
@@ -29,36 +31,46 @@ class ModCard(object):
                 and self.versions == other.versions
                 and self.downloads == other.downloads)
 
+    # noinspection PyCallingNonCallable
     @classmethod
-    def from_tag(cls, tag):
+    def from_element(cls, element):
         """
-        Create a :class:`ModCard` from a BeautifulSoup Tag.
+        Create a :class:`ModCard` from an lxml Element.
 
-        :param tag: the tag to create a ModCard from
+        :param element: the element to create a ModCard from
         :return: the new ModCard
         """
+        element.make_links_absolute(MOD_PORTAL_URL)
 
-        # "Top-level" tags
-        mod_card_title = tag.select_one('.mod-card-title')
-        mod_card_author = tag.select_one('.mod-card-author')
-        mod_card_info = tag.select_one('.mod-card-info')
+        # "Top-level" elements
+        mod_card_title = cls.select_title(element)[0]
+        mod_card_author = cls.select_author(element)[0]
+        mod_card_info = cls.select_info(element)[0]
 
-        # Tags that aren't important enough to be listed above
-        link_tag = mod_card_title.find('a')
-        author_link_tag = mod_card_author.find('a')
-        last_updated_tag = mod_card_info.select_one('span:nth-of-type(1)')
-        versions_tag = mod_card_info.select_one('span:nth-of-type(2)')
-        downloads_tag = mod_card_info.select_one('span:nth-of-type(3)')
+        # Elements that aren't important enough to be listed above
+        link = mod_card_title.find('a')
+        author_link = mod_card_author.find('a')
+        last_updated = cls.select_last_updated(mod_card_info)[0]
+        versions = cls.select_versions(mod_card_info)[0]
+        downloads = cls.select_downloads(mod_card_info)[0]
 
         return ModCard(
-            title=mod_card_title.text.strip(),
-            link=MOD_PORTAL_URL + link_tag['href'],
-            author=mod_card_author.text.strip()[3:],  # Remove 'by '
-            author_link=MOD_PORTAL_URL + author_link_tag['href'],
-            last_updated=last_updated_tag.text.strip(),
-            versions=versions_tag.text.strip(),
-            downloads=int(downloads_tag.text.strip())
+            title=mod_card_title.text_content().strip(),
+            link=link.get('href'),
+            author=mod_card_author.text_content().strip()[3:],  # Remove 'by '
+            author_link=author_link.get('href'),
+            last_updated=last_updated.text_content().strip(),
+            versions=versions.text_content().strip(),
+            downloads=int(downloads.text_content())
         )
+
+    # Precompiled CSS selector functions, for performance reasons
+    select_title = CSSSelector('.mod-card-title', translator='html')
+    select_author = CSSSelector('.mod-card-author', translator='html')
+    select_info = CSSSelector('.mod-card-info', translator='html')
+    select_last_updated = CSSSelector('span:nth-of-type(1)', translator='html')
+    select_versions = CSSSelector('span:nth-of-type(2)', translator='html')
+    select_downloads = CSSSelector('span:nth-of-type(3)', translator='html')
 
 
 class ModPortal(object):
@@ -77,15 +89,15 @@ class ModPortal(object):
     @staticmethod
     def _parse_mods(html):
         """
-        Generator that yields all ``.mod-card`` tags in
-        the given HTML document.
+        Generator that yields all ``.mod-card`` elements
+        in the given HTML document.
 
-        :param html: the HTMl document to parse for mods
+        :param html: the HTML document to parse for elements
         """
-        soup = BeautifulSoup(html, 'lxml')
+        document = lxml.html.document_fromstring(html)
 
-        for tag in soup.select('.mod-card'):
-            yield ModCard.from_tag(tag)
+        for element in document.cssselect('.mod-card'):
+            yield ModCard.from_element(element)
 
     def _do_search(self, query):
         """
