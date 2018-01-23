@@ -87,16 +87,33 @@ class ModPortal(object):
 
     def search(self, query):
         """
-        Make a web request to the mod portal and return
-        the resulting response object.
+        Search for a query on the Factorio mod portal
+        and return the first page of search results.
 
-        :param query: the string to search the mod portal for
-        :return: the mod portal response
+        :param query: the query string
+        :return: list of search results
         """
-        query = self._sanitize_query(query)
-        url = self.QUERY_URL + query
+        response = self._do_search(query)
+        results = self._parse_mods(response.text)
 
-        return self._session.get(url)
+        return list(results)
+
+    def search_one(self, query):
+        """
+        Search for a query on the Factorio mod portal
+        and return the first result, or ``None`` if
+        there are no results.
+
+        **Note:** This is faster than doing ``search(query)[0]`` or similar,
+        because it doesn't parse irrelevant search results.
+
+        :param query: the query string
+        :return: the first search result
+        """
+        response = self._do_search(query)
+        results = self._parse_mods(response.text)
+
+        return next(results)
 
     @classmethod
     def _parse_mods(cls, html):
@@ -110,6 +127,19 @@ class ModPortal(object):
 
         for element in cls.select_mod_cards(document):
             yield ModCard.from_element(element)
+
+    def _do_search(self, query):
+        """
+        Make a web request to the mod portal and return
+        the resulting response object.
+
+        :param query: the string to search the mod portal for
+        :return: the mod portal response
+        """
+        query = self._sanitize_query(query)
+        url = self.QUERY_URL + query
+
+        return self._session.get(url)
 
     @staticmethod
     def _sanitize_query(query):

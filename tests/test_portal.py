@@ -43,6 +43,7 @@ class TestModCard(object):
 
 
 # noinspection PyProtectedMember
+# noinspection PyShadowingNames
 class TestModPortal(object):
     def test_sanitize_query_simple(self):
         sanitized = ModPortal._sanitize_query('helloworld123')
@@ -69,13 +70,12 @@ class TestModPortal(object):
         assert 'User-Agent' in portal._session.headers
 
     @patch('requests.Session.get')
-    def test_search_actually_makes_a_web_request(self, get):
+    def test_do_search_actually_makes_a_web_request(self, get):
         portal = ModPortal()
-        portal.search('hello')
+        portal._do_search('hello')
 
         get.assert_called_once_with('https://mods.factorio.com/query/hello')
 
-    # noinspection PyShadowingNames
     def test_parse_mods_yields_all_mods_in_document(self, html):
         mods = list(ModPortal._parse_mods(html))
         assert len(mods) == 20
@@ -85,3 +85,29 @@ class TestModPortal(object):
             for value in vars(mod_card).values():
                 assert value is not None
                 assert value != 'Unknown'
+
+    @patch('requests.Session.get')
+    def test_search(self, get, *, html):
+        get.return_value.text = html
+
+        portal = ModPortal()
+        mods = portal.search('hello')
+
+        assert len(mods) == 20
+
+        # Check that every parsed mod card has no invalid data
+        for mod_card in mods:
+            for value in vars(mod_card).values():
+                assert value is not None
+                assert value != 'Unknown'
+
+    @patch('bot.portal.ModCard')
+    @patch('requests.Session.get')
+    def test_search_one_only_parses_one_element(self, get, mod_card, *, html):
+        get.return_value.text = html
+
+        portal = ModPortal()
+        portal.search_one('hello')
+
+        # Check that only one mod card was parsed in total
+        mod_card.from_element.assert_called_once()
