@@ -69,17 +69,18 @@ class TestModPortal(object):
         assert 'User-Agent' in portal._session.headers
 
     @patch('requests.Session.get')
-    def test_do_search_actually_makes_a_web_request(self, get):
+    def test_search_actually_makes_a_web_request(self, get):
         portal = ModPortal()
-        portal._do_search('hello')
+        portal.search('hello')
 
         get.assert_called_once_with('https://mods.factorio.com/query/hello')
 
+    # noinspection PyShadowingNames
     def test_parse_mods_yields_all_mods_in_document(self, html):
         mods = list(ModPortal._parse_mods(html))
         assert len(mods) == 20
 
-        # Check that every mod parsed has no invalid data
+        # Check that every parsed mod card has no invalid data
         for mod_card in mods:
             for value in vars(mod_card).values():
                 assert value is not None

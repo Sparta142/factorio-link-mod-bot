@@ -1,8 +1,7 @@
+import lxml.html
 import requests
 import urllib.parse
-import lxml.html
 from lxml.cssselect import CSSSelector
-
 
 MOD_PORTAL_URL = 'https://mods.factorio.com'
 
@@ -86,6 +85,19 @@ class ModPortal(object):
                 'User-Agent': user_agent
             })
 
+    def search(self, query):
+        """
+        Make a web request to the mod portal and return
+        the resulting response object.
+
+        :param query: the string to search the mod portal for
+        :return: the mod portal response
+        """
+        query = self._sanitize_query(query)
+        url = self.QUERY_URL + query
+
+        return self._session.get(url)
+
     @classmethod
     def _parse_mods(cls, html):
         """
@@ -98,19 +110,6 @@ class ModPortal(object):
 
         for element in cls.select_mod_cards(document):
             yield ModCard.from_element(element)
-
-    def _do_search(self, query):
-        """
-        Make a web request to the mod portal and return
-        the resulting response object.
-
-        :param query: the string to search the mod portal for
-        :return: the mod portal response
-        """
-        query = self._sanitize_query(query)
-        url = self.QUERY_URL + query
-
-        return self._session.get(url)
 
     @staticmethod
     def _sanitize_query(query):
