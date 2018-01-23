@@ -84,7 +84,6 @@ class TestModPortal(object):
         for mod_card in mods:
             for value in vars(mod_card).values():
                 assert value is not None
-                assert value != 'Unknown'
 
     @patch('requests.Session.get')
     def test_search(self, get, *, html):
@@ -99,7 +98,6 @@ class TestModPortal(object):
         for mod_card in mods:
             for value in vars(mod_card).values():
                 assert value is not None
-                assert value != 'Unknown'
 
     @patch('bot.portal.ModCard')
     @patch('requests.Session.get')
