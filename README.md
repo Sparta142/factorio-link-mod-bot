@@ -19,3 +19,14 @@ Run this in your favorite shell to install directly from GitHub:
 ```
 $ pip install -e git+https://github.com/Sparta142/factorio-link-mod-bot.git#egg=factorio_link_mod_bot
 ```
+
+### Configuration
+This project only uses environment variables for configuration.
+This makes it ideal for deployment to Heroku or other similar PaaS.
+
+* `REDDIT_CLIENT_ID` - The Reddit application ID.
+* `REDDIT_CLIENT_SECRET` - The Reddit application secret.
+* `REDDIT_USERNAME` - The Reddit username to sign in with.
+* `REDDIT_PASSWORD` - The Reddit password to sign in with.
+* `REDDIT_USER_AGENT` - The user agent reported to Reddit.
+* `FACTORIO_USER_AGENT` - The user agent reported to the Factorio mod portal.
