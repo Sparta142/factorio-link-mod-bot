@@ -14,8 +14,8 @@ This project is a complete rewrite of the project fork at
 
 **Note:** You can use more than one command at once, but the response will 
 always be capped at 20 results.  
-**Note 2:** The bot will only respond to comments, not submissions 
-(i.e., self posts).
+**Note 2:** The bot will not respond to self posts. However, that will 
+(hopefully) change in the future.
 
 ## Installation
 Run this in your favorite shell to install directly from GitHub:
@@ -23,7 +23,7 @@ Run this in your favorite shell to install directly from GitHub:
 $ pip install -e git+https://github.com/Sparta142/factorio-link-mod-bot.git#egg=factorio_link_mod_bot
 ```
 
-### Configuration
+#### Configuration
 This project only uses environment variables for configuration.
 This makes it ideal for deployment to Heroku or other similar PaaS.
 
