@@ -107,3 +107,11 @@ class TestModPortal(object):
 
         # Check that only one mod card was parsed in total
         assert mod_card.from_element.call_count == 1
+
+    @patch('bot.portal.ModPortal._parse_mods')
+    @patch('requests.Session.get')
+    def test_search_one_when_no_results_found(self, get, parse_mods):
+        parse_mods.return_value = iter([])
+
+        portal = ModPortal()
+        assert portal.search_one('hello') is None

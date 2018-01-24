@@ -111,7 +111,11 @@ class ModPortal(object):
         :return: the first search result
         """
         response = self._do_search(query)
-        return next(self._parse_mods(response.text))
+
+        try:
+            return next(self._parse_mods(response.text))
+        except StopIteration:
+            return None
 
     @classmethod
     def _parse_mods(cls, html):
