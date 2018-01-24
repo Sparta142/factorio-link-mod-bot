@@ -21,6 +21,9 @@ class SearchResult(object):
         self.versions = kwargs.get('versions')
         self.downloads = kwargs.get('downloads')
 
+    def __str__(self):
+        return '{} by {}'.format(self.title, self.author)
+
     def __eq__(self, other):
         return (self.title == other.title
                 and self.link == other.link
