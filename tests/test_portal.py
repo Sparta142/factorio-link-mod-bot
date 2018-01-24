@@ -92,8 +92,6 @@ class TestModPortal(object):
         portal = ModPortal()
         mods = portal.search('hello')
 
-        assert len(mods) == 20
-
         # Check that every parsed mod card has no invalid data
         for mod_card in mods:
             for value in vars(mod_card).values():

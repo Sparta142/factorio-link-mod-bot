@@ -88,15 +88,12 @@ class ModPortal(object):
     def search(self, query):
         """
         Search for a query on the Factorio mod portal
-        and return the first page of search results.
+        and generate the first page of search results.
 
         :param query: the query string
-        :return: list of search results
         """
         response = self._do_search(query)
-        search_results = self._parse_mods(response.text)
-
-        return list(search_results)
+        return self._parse_mods(response.text)
 
     def search_one(self, query):
         """
@@ -111,9 +108,7 @@ class ModPortal(object):
         :return: the first search result
         """
         response = self._do_search(query)
-        search_results = self._parse_mods(response.text)
-
-        return next(search_results)
+        return next(self._parse_mods(response.text))
 
     @classmethod
     def _parse_mods(cls, html):
