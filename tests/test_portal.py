@@ -96,22 +96,3 @@ class TestModPortal(object):
         for mod_card in mods:
             for value in vars(mod_card).values():
                 assert value is not None
-
-    @patch('bot.portal.SearchResult')
-    @patch('requests.Session.get')
-    def test_search_one_only_parses_one_element(self, get, mod_card, *, html):
-        get.return_value.text = html
-
-        portal = ModPortal()
-        portal.search_one('hello')
-
-        # Check that only one mod card was parsed in total
-        assert mod_card.from_element.call_count == 1
-
-    @patch('bot.portal.ModPortal._parse_mods')
-    @patch('requests.Session.get')
-    def test_search_one_when_no_results_found(self, get, parse_mods):
-        parse_mods.return_value = iter([])
-
-        portal = ModPortal()
-        assert portal.search_one('hello') is None

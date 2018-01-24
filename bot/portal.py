@@ -98,25 +98,6 @@ class ModPortal(object):
         response = self._do_search(query)
         return self._parse_mods(response.text)
 
-    def search_one(self, query):
-        """
-        Search for a query on the Factorio mod portal
-        and return the first result, or ``None`` if
-        there are no results.
-
-        **Note:** This is faster than doing ``search(query)[0]`` or similar,
-        because it doesn't parse irrelevant search results.
-
-        :param query: the query string
-        :return: the first search result
-        """
-        response = self._do_search(query)
-
-        try:
-            return next(self._parse_mods(response.text))
-        except StopIteration:
-            return None
-
     @classmethod
     def _parse_mods(cls, html):
         """

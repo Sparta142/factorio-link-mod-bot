@@ -6,27 +6,29 @@ class LinkModCommand(object):
     Represents a !linkmod-type string, typically found
     in a Reddit comment or submission.
     """
-    __slots__ = ('query', 'multiple')
+    __slots__ = ('query', 'amount')
 
     COMMAND_PATTERN = re.compile(r'''
     \b  # Start capture on a word boundary (including an exclamation point)
     link
     [^\S\r\n]*  # Optional space after "link" (no newline)
-    mod(?P<multiple>s?)  # Also keep track of singular or plural "mod"
+    (?P<amount>\d*)
+    [^\S\r\n]*  # Optional space before "mod" (no newline)
+    mods?  # Allow singular or plural "mod" but don't keep track of it
     (?:[^\S\r\n]*:[^\S\r\n]*|[^\S\r\n]+)  # Some sort of colon/space separator
     (?P<query>.+?)  # Capture the non-empty query in a named group
     (?:\.|;|$)  # End capture on period, semicolon, or end of line
     ''', re.IGNORECASE | re.MULTILINE | re.VERBOSE)
 
-    def __init__(self, query, multiple):
+    def __init__(self, query, amount):
         self.query = query
-        self.multiple = multiple
+        self.amount = max(amount, 1)
 
     def __repr__(self):
-        return 'LinkModCommand({!r}, {!r})'.format(self.query, self.multiple)
+        return 'LinkModCommand({!r}, {!r})'.format(self.query, self.amount)
 
     def __eq__(self, other):
-        return (self.query, self.multiple) == (other.query, other.multiple)
+        return (self.query, self.amount) == (other.query, other.amount)
 
     @classmethod
     def all_in_text(cls, text):
@@ -38,9 +40,9 @@ class LinkModCommand(object):
         """
         for match in cls.COMMAND_PATTERN.finditer(text):
             query = match.group('query')
-            multiple = bool(match.group('multiple'))
+            amount = int(match.group('amount') or 1)
 
-            yield LinkModCommand(query, multiple)
+            yield LinkModCommand(query, amount)
 
 
 def replied_to(comment, redditor):  # pragma: no cover

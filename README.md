@@ -10,7 +10,7 @@ This project is a complete rewrite of the project fork at
 
 ## Usage (for Redditors)
 * To link a single mod: `linkmod: Squeak Through`
-* To link a list of mods (max 20): `linkmods: Bobingabout`
+* To link a variable amount of mods (max 20): `link20mods: Bobingabout`
 
 **Note:** You can use more than one command at once, but the response will 
 always be capped at 20 results.  
