@@ -1,8 +1,9 @@
-SEARCH_RESULT_FORMAT = '{title} | {author} | {downloads:,d} | {last_updated}'
-COMMENT_FORMAT = '''#LinkMod:
+SEARCH_RESULT_FORMAT = ('{title} | {author} | {last_updated} '
+                        '| {downloads:,d} | {versions}')
+COMMENT_FORMAT = '''###LinkMod:
 
-Title | Author | Downloads | Last updated
-:--|:--|:--|:--
+Title | Author | Last updated | Downloads | Versions
+:---|:---|:---|:---|:---
 {0}
 
 *****
@@ -39,7 +40,8 @@ def format_search_result(result):
         title=hyperlink(result.title, result.link),
         author=hyperlink(result.author, result.author_link),
         downloads=result.downloads,
-        last_updated=result.last_updated
+        last_updated=result.last_updated,
+        versions=result.versions
     )
 
 
