@@ -41,3 +41,16 @@ class LinkModCommand(object):
             multiple = bool(match.group('multiple'))
 
             yield LinkModCommand(query, multiple)
+
+
+def replied_to(comment, redditor):  # pragma: no cover
+    """
+    Return whether the given comment was directly replied to
+    by the given Redditor.
+
+    :param comment: the comment to check
+    :param redditor: the Redditor to check for
+    :return: whether ``redditor`` replied to ``comment``
+    """
+    comment.replies.replace_more(limit=None)  # TODO: Necessary?
+    return any(reply.author == redditor for reply in comment.replies)
