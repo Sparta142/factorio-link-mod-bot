@@ -78,7 +78,7 @@ class SearchResult(object):
 class ModPortal(object):
     """ Wrapper around the Factorio mod portal website. """
 
-    QUERY_URL = MOD_PORTAL_URL + '/query/'
+    QUERY_URL = MOD_PORTAL_URL + '/query/{}/downloaded/1'
 
     def __init__(self, user_agent=None):
         self._session = requests.Session()
@@ -120,7 +120,7 @@ class ModPortal(object):
         :return: the mod portal response
         """
         query = self._sanitize_query(query)
-        url = self.QUERY_URL + query
+        url = self.QUERY_URL.format(query)
 
         return self._session.get(url)
 

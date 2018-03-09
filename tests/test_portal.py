@@ -74,7 +74,8 @@ class TestModPortal(object):
         portal = ModPortal()
         portal._do_search('hello')
 
-        get.assert_called_once_with('https://mods.factorio.com/query/hello')
+        get.assert_called_once_with(
+            'https://mods.factorio.com/query/hello/downloaded/1')
 
     def test_parse_mods_yields_all_mods_in_document(self, html):
         mods = list(ModPortal._parse_mods(html))
