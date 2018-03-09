@@ -13,6 +13,20 @@ Title | Author | Last updated | Downloads | Versions
 ^[GitHub](https://github.com/Sparta142/factorio-mod-portal-bot)
 '''
 
+# Markdown formatting characters to escape in hyperlinks, etc
+ESCAPED_CHARACTERS = '\\`*_{}[]()#+-.!'
+
+
+def escape(s):
+    """
+    Backslash-escape most Markdown formatting characters
+    in a given string.
+
+    :param s: the Markdown string to escape
+    :return: the escaped string
+    """
+    return ''.join('\\' + ch if ch in ESCAPED_CHARACTERS else ch for ch in s)
+
 
 def hyperlink(text, url):
     """
@@ -23,10 +37,7 @@ def hyperlink(text, url):
     :param url: the url to link to
     :return: the Markdown-formatted link
     """
-    escaped_text = text.replace('[', r'\[').replace(']', r'\]')
-    escaped_url = url.replace('(', r'\(').replace(')', r'\)')
-
-    return '[{}]({})'.format(escaped_text, escaped_url)
+    return '[{}]({})'.format(escape(text), escape(url))
 
 
 def format_search_result(result):

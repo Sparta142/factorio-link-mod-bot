@@ -1,36 +1,36 @@
 from pytest import fixture
 
-from bot.markdown import hyperlink, format_search_result, format_comment
+from bot.markdown import hyperlink, format_search_result, format_comment, escape
 from bot.portal import SearchResult
 
 
 class TestHyperlinkFunction(object):
     def test_no_edge_cases(self):
-        expected = '[text](http://example.com)'
+        expected = r'[text](http://example\.com)'
         actual = hyperlink('text', 'http://example.com')
 
         assert expected == actual
 
     def test_square_brackets_in_text(self):
-        expected = r'[\]text\[](http://example.com)'
+        expected = r'[\]text\[](http://example\.com)'
         actual = hyperlink(']text[', 'http://example.com')
 
         assert expected == actual
 
     def test_square_brackets_in_url(self):
-        expected = '[text](http://example.com/Some_[thing])'
+        expected = r'[text](http://example\.com/Some\_\[thing\])'
         actual = hyperlink('text', 'http://example.com/Some_[thing]')
 
         assert expected == actual
 
     def test_parentheses_in_text(self):
-        expected = '[text (thing)](http://example.com)'
+        expected = r'[text \(thing\)](http://example\.com)'
         actual = hyperlink('text (thing)', 'http://example.com')
 
         assert expected == actual
 
     def test_parentheses_in_url(self):
-        expected = r'[text](http://example.com/Some_\(thing\))'
+        expected = r'[text](http://example\.com/Some\_\(thing\))'
         actual = hyperlink('text', 'http://example.com/Some_(thing)')
 
         assert expected == actual
@@ -53,9 +53,9 @@ class TestFormatFunctions(object):
 
         # Just check that it contains all relevant data /somehow/
         assert 'SampleMod' in formatted
-        assert 'http://example.com/mod/SamplePageMod' in formatted
+        assert 'http://example\\.com/mod/SamplePageMod' in formatted
         assert 'SampleAuthor' in formatted
-        assert 'http://example.com/user/SamplePageAuthor' in formatted
+        assert 'http://example\\.com/user/SamplePageAuthor' in formatted
         assert '123,456' in formatted
         assert 'a month ago' in formatted
 
@@ -64,8 +64,13 @@ class TestFormatFunctions(object):
 
         # Just check that it contains all relevant data /somehow/
         assert formatted.count('SampleMod') == 7
-        assert formatted.count('http://example.com/mod/SamplePageMod') == 7
+        assert formatted.count('http://example\\.com/mod/SamplePageMod') == 7
         assert formatted.count('SampleAuthor') == 7
-        assert formatted.count('http://example.com/user/SamplePageAuthor') == 7
+        assert formatted.count('http://example\\.com/user/SamplePageAuthor') == 7
         assert formatted.count('123,456') == 7
         assert formatted.count('a month ago') == 7
+
+    def test_escape_underscores(self):
+        assert escape('_helloworld_') == r'\_helloworld\_'
+
+
