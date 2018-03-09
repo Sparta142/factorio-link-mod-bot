@@ -3,7 +3,7 @@ import os
 from pytest import fixture
 from unittest.mock import patch
 
-from bot.portal import SearchResult, ModPortal
+from bot.portal import ModPortal, SearchResult
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(CURRENT_DIR, 'data')
@@ -97,15 +97,3 @@ class TestModPortal(object):
         for mod_card in mods:
             for value in vars(mod_card).values():
                 assert value is not None
-
-    @patch('requests.Session.get')
-    def test_search_exact(self, get, *, html):
-        get.return_value.text = html
-
-        portal = ModPortal()
-        mods = portal.search_exact("boB'S")
-
-        # Assert that every mod card contains "Bob's"
-        for mod_card in mods:
-            assert "Bob's" in mod_card.title
-

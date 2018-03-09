@@ -1,5 +1,4 @@
 import lxml.html
-import re
 import requests
 import urllib.parse
 from lxml.cssselect import CSSSelector
@@ -99,18 +98,6 @@ class ModPortal(object):
         response = self._do_search(query)
         return self._parse_mods(response.text)
 
-    def search_exact(self, query):
-        """
-        Search for an exact query on the Factorio mod portal
-        and return the first page of search results, filtered
-        to only include results that exactly contain ``query``.
-
-        :param query: the exact query string to search for
-        """
-        mods = self.search(query)
-        query_clean = self._alphanumeric(query)
-        return [m for m in mods if query_clean in self._alphanumeric(m.title)]
-
     @classmethod
     def _parse_mods(cls, html):
         """
@@ -150,10 +137,6 @@ class ModPortal(object):
         :return: the sanitized string
         """
         return urllib.parse.quote(query.replace('/', ''))
-
-    @staticmethod
-    def _alphanumeric(s):
-        return re.sub(r'[^a-z0-9]', '', s.lower(), re.UNICODE)
 
     # Precompiled CSS selector function, for performance reasons
     select_mod_cards = CSSSelector('.mod-card', translator='html')
