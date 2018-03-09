@@ -107,9 +107,12 @@ class ModPortal(object):
         :param html: the HTML document to parse for elements
         """
         document = lxml.html.document_fromstring(html)
+        results = []
 
         for element in cls.select_mod_cards(document):
-            yield SearchResult.from_element(element)
+            results.append(SearchResult.from_element(element))
+
+        return results
 
     def _do_search(self, query):
         """

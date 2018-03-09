@@ -33,16 +33,20 @@ class LinkModCommand(object):
     @classmethod
     def all_in_text(cls, text):
         """
-        Generator that yields all valid ``LinkModCommands``
-        in the given string.
+        Get a list of all valid ``LinkModCommands`` in the given string.
 
         :param text: the string to parse for commands
+        :return: list of commands
         """
+        commands = []
+
         for match in cls.COMMAND_PATTERN.finditer(text):
             query = match.group('query')
             amount = int(match.group('amount') or 1)
 
-            yield LinkModCommand(query, amount)
+            commands.append(LinkModCommand(query, amount))
+
+        return commands
 
 
 def replied_to(comment, redditor):  # pragma: no cover
